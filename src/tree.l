@@ -48,6 +48,14 @@
 
 (record aa-kv aa-left aa-right aa-level)
 
+(de aa-search (Tree Key)
+   (unless (not Tree)
+      (if (== Key (car (aa-kv Tree)))
+         (aa-kv Tree)
+         (if (< Key (car (aa-kv Tree)))
+            (aa-search (aa-left Tree) Key)
+            (aa-search (aa-right Tree) Key) ) ) ) )
+
 (de aa-skew (Tree)
    (unless (not Tree)
       (if (not (aa-left Tree))
@@ -84,42 +92,3 @@
                (if (< Key (car (aa-kv Tree)))
                   (list (aa-kv Tree) (aa-insert Key Val (aa-left Tree)) (aa-right Tree) (aa-level Tree))
                   (list (aa-kv Tree) (aa-left Tree) (aa-insert Key Val (aa-right Tree)) (aa-level Tree)) ) ) ) ) ) )
-
-## (de t23-new (Key Val)
-##    (list (list Key Val) NIL NIL NIL NIL) )
-
-## (de t23-unwrap-node X
-##    (let (left-kv (car (car X))
-##          right-kv (car (nth (car X) 2))
-##          left-node (car (nth (car X) 3))
-##          middle-node (car (nth (car X) 4))
-##          right-node (car (nth (car X) 5)) )
-##       (run (cdr X)) ) )
-
-## (de t23-insert (Node Key Val)
-##    (t23-unwrap-node Node
-
-##       # Leaf
-##       (if (not left-node)
-
-##          # Single key node
-##          (if (not right-kv)
-
-##             # Key matches, replace
-##             (if (== (car left-kv) Key)
-##                (list (list Key Val) NIL NIL NIL NIL)
-               
-##                # Key doesn't match, place in one of the key slots
-##                (if (< (car left-kv) Key)
-##                   (list left-kv (list Key Val) NIL NIL NIL)
-##                   (list (list Key Val) left-kv NIL NIL NIL) ) )
-            
-##             # Two Key Node
-            
-##             # Key matches left, replace
-##             (if (== (car left-kv) Key)
-##                (list (list Key Val) right-kv left-node middle-node right-node)
-               
-##                # Key matches right, replace
-##                (if (== (car right-kv) Key)
-##                   (list left-kv (list Key Val) left-node middle-node right-node)
