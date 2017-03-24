@@ -46,6 +46,8 @@
             (eval (list 'de (car X) '(Lst) (list 'car (list 'nth 'Lst N))))
             (recurse (inc N) (cdr X)) ) ) ) )
 
+(record aa-kv aa-left aa-right aa-level)
+
 (de aa-unwrap X
    (let (KV (car (car X))
          Left (cadr (car X))
@@ -55,18 +57,26 @@
 
 (de aa-skew (Tree)
    (unless (not Tree)
-      (aa-unwrap Tree
-         (if (not Left) Tree
-            (if (== Level (aa-unwrap Left Level))
-               (let (LL (cadr Left)
-                     LR (caddr Left) )
-                  (list (car Left) LL
-                     (list KV LR Right Level) (cadddr Left) ) )
-               Tree ) ) ) ) )
+      (if (not (aa-left Tree))
+         Tree
+         (if (== (aa-level (aa-left Tree)) (aa-level Tree))
+            (list (aa-kv (aa-left Tree))
+               (aa-left (aa-left Tree))
+               (list (aa-kv Tree) (aa-right (aa-left Tree)) (aa-right Tree) (aa-level Tree))
+               (aa-level (aa-left Tree)) )
+            Tree ) ) ) )
 
-## (de aa-split (Tree)
-##    (unless (not Tree)
-      
+(de aa-split (Tree)
+   (unless Tree
+      (if (not (and (aa-right Tree) (aa-right (aa-right Tree))))
+         Tree
+         (if (== (aa-level Tree) (aa-level (aa-right (aa-right Tree))))
+            (list (aa-kv (aa-right Tree))
+               (list (aa-kv Tree) (aa-left Tree) (aa-left (aa-right Tree)) (aa-level Tree))
+               (aa-right Tree)
+               (inc (aa-level (aa-right Tree))) )
+            Tree ) ) ) )
+
 
 (de aa-insert (Key Val Tree)
 
@@ -76,11 +86,11 @@
 
       (aa-split
          (aa-skew
-            (if (== Key (car KV))
-               (list (list Key Val) Left Right Level)
-               (if (< Key (car KV))
-                  (list KV (aa-insert Key Val Left) Right Level)
-                  (list KV Left (aa-insert Key Val Left) Level) ) ) ) ) ) )
+            (if (== Key (car (aa-kv Tree)))
+               (list (list Key Val) (aa-left Tree) (aa-right Tree) (aa-level Tree))
+               (if (< Key (car (aa-kv Tree)))
+                  (list (aa-kv Tree) (aa-insert Key Val (aa-left Tree)) (aa-right Tree) (aa-level Tree))
+                  (list (aa-kv Tree) (aa-left Tree) (aa-insert Key Val (aa-right Tree)) (aa-level Tree)) ) ) ) ) ) )
 
 ## (de t23-new (Key Val)
 ##    (list (list Key Val) NIL NIL NIL NIL) )
