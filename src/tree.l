@@ -48,13 +48,6 @@
 
 (record aa-kv aa-left aa-right aa-level)
 
-(de aa-unwrap X
-   (let (KV (car (car X))
-         Left (cadr (car X))
-         Right (caddr (car X))
-         Level (cadddr (car X)) )
-      (run (cdr X)) ) )
-
 (de aa-skew (Tree)
    (unless (not Tree)
       (if (not (aa-left Tree))
@@ -67,7 +60,7 @@
             Tree ) ) ) )
 
 (de aa-split (Tree)
-   (unless Tree
+   (unless (not Tree)
       (if (not (and (aa-right Tree) (aa-right (aa-right Tree))))
          Tree
          (if (== (aa-level Tree) (aa-level (aa-right (aa-right Tree))))
