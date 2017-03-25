@@ -14,6 +14,21 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
+## (record sym [sym ..]) -> NIL
+
+# Defines getter and (non-destructive) setter functions which act upon
+# a list of length equal to the number of symbols passed to
+# record. Basically provides a quick and easy data structure.
+
+# The functions assigned to each symbol can be used in two forms, the
+# first being the getter and the second being the setter.
+
+# (sym 'lst) -> any
+# (sym 'lst 'any) -> lst
+
+# Probably you want to prefix each symbol with a data type name.
 (de record X
    (let (@N 1)
       (recur (@N X)
