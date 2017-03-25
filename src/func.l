@@ -15,8 +15,9 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (de record X
-   (let (N 1)
-      (recur (N X)
+   (let (@N 1)
+      (recur (@N X)
          (unless (not X)
-            (eval (list 'de (car X) '(Lst) (list 'car (list 'nth 'Lst N))))
-            (recurse (inc N) (cdr X)) ) ) ) )
+            (def (car X) (fill '((Lst) (car (nth Lst @N)))))
+            (recurse (inc @N) (cdr X)) ) ) ) )
+

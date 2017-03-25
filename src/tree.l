@@ -14,6 +14,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(load "func.l")
+
 (de bst-new (Key Val)
    (list Key Val NIL NIL) )
 
@@ -38,13 +40,6 @@
             (bst-search (cadddr Tree) Key) ) ) ) )
 
 # AANode = ((Key Val) LeftT RightT Level)
-
-(de record X
-   (let (N 1)
-      (recur (N X)
-         (unless (not X)
-            (eval (list 'de (car X) '(Lst) (list 'car (list 'nth 'Lst N))))
-            (recurse (inc N) (cdr X)) ) ) ) )
 
 (record aa-kv aa-left aa-right aa-level)
 
@@ -92,3 +87,22 @@
                (if (< Key (car (aa-kv Tree)))
                   (list (aa-kv Tree) (aa-insert Key Val (aa-left Tree)) (aa-right Tree) (aa-level Tree))
                   (list (aa-kv Tree) (aa-left Tree) (aa-insert Key Val (aa-right Tree)) (aa-level Tree)) ) ) ) ) ) )
+
+## (de aa-delete (Tree Key)
+##    (unless Tree
+##       (if (> Key (car (aa-kv Tree)))
+##          (list (aa-kv Tree) (aa-left Tree) (aa-delete (aa-right Tree Key)) (aa-level Tree))
+##          (if (< Key (car (aa-kv Tree)))
+##             (list (aa-kv Tree) (aa-delete (aa-left Tree Key)) (aa-right Tree) (aa-level Tree))
+##             (unless (not (or (aa-left Tree) (aa-right Tree)))
+##                (if (not (aa-left Tree))
+##                   (let (L (successor Tree))
+##                      (list (aa-kv L) (aa-left Tree) (delete (aa-right Tree) (car (aa-kv L))) (aa-value L)) )
+##                   (let (L (predecessor Tree))
+##                      (list (aa-kv L) (delete (aa-left Tree) (car (aa-kv L))) (aa-right Tree) (aa-value L)) ) ) ) ) )
+##       (let (Tree2 (skew (decrease-level Tree))
+##             Tree3 
+##  )
+         
+      
+                  
