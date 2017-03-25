@@ -18,6 +18,5 @@
    (let (@N 1)
       (recur (@N X)
          (unless (not X)
-            (def (car X) (fill '((Lst) (car (nth Lst @N)))))
+            (def (car X) (macro '((Lst) (car (nth Lst @N)))))
             (recurse (inc @N) (cdr X)) ) ) ) )
-
