@@ -53,18 +53,15 @@
 
 # Buggy, needs fixing
 (de aa-insert (Key Val Tree)
-
-   # Empty tree
    (if (not Tree)
       (list (list Key Val) NIL NIL 1)
-
       (aa-split
          (aa-skew
             (if (== Key (car (aa-kv Tree)))
-               (list (list Key Val) (aa-left Tree) (aa-right Tree) (aa-level Tree))
+               (aa-kv Tree (list Key Val))
                (if (< Key (car (aa-kv Tree)))
-                  (list (aa-kv Tree) (aa-insert Key Val (aa-left Tree)) (aa-right Tree) (aa-level Tree))
-                  (list (aa-kv Tree) (aa-left Tree) (aa-insert Key Val (aa-right Tree)) (aa-level Tree)) ) ) ) ) ) )
+                  (aa-left Tree (aa-insert Key Val (aa-left Tree)))
+                  (aa-right Tree (aa-insert Key Val (aa-right Tree))) ) ) ) ) ) )
 
 (de aa-delete (Key Tree)
    (if (not Tree)
