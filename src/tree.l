@@ -33,10 +33,7 @@
       (if (not (aa-left Tree))
          Tree
          (if (== (aa-level (aa-left Tree)) (aa-level Tree))
-            (list (aa-kv (aa-left Tree))
-               (aa-left (aa-left Tree))
-               (list (aa-kv Tree) (aa-right (aa-left Tree)) (aa-right Tree) (aa-level Tree))
-               (aa-level (aa-left Tree)) )
+            (aa-right (aa-left Tree) (aa-left Tree (aa-right (aa-left Tree))))
             Tree ) ) ) )
 
 (de aa-split (Tree)
