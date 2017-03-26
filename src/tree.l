@@ -16,29 +16,6 @@
 
 (load "func.l")
 
-(de bst-new (Key Val)
-   (list Key Val NIL NIL) )
-
-(de bst-insert (Tree Key Val)
-   (if (== (car Tree) Key) (set (cdr Tree) Val)
-      (if (< Key (car Tree))
-         (if (not (caddr Tree))
-            (set (cddr Tree) (bst-new Key Val))
-            (bst-insert (caddr Tree) Key Val) )
-         (if (not (cadddr Tree))
-            (set (cdddr Tree) (bst-new Key Val))
-            (bst-insert (cadddr Tree) Key Val) ) ) )
-   Tree )
-
-(de bst-search (Tree Key)
-   (if (not Tree)
-      NIL
-      (if (== Key (car Tree))
-         (list (car Tree) (cadr Tree))
-         (if (< Key (car Tree))
-            (bst-search (caddr Tree) Key)
-            (bst-search (cadddr Tree) Key) ) ) ) )
-
 # AANode = ((Key Val) LeftT RightT Level)
 
 (record aa-kv aa-left aa-right aa-level)
@@ -88,21 +65,73 @@
                   (list (aa-kv Tree) (aa-insert Key Val (aa-left Tree)) (aa-right Tree) (aa-level Tree))
                   (list (aa-kv Tree) (aa-left Tree) (aa-insert Key Val (aa-right Tree)) (aa-level Tree)) ) ) ) ) ) )
 
-## (de aa-delete (Tree Key)
-##    (unless Tree
-##       (if (> Key (car (aa-kv Tree)))
-##          (list (aa-kv Tree) (aa-left Tree) (aa-delete (aa-right Tree Key)) (aa-level Tree))
-##          (if (< Key (car (aa-kv Tree)))
-##             (list (aa-kv Tree) (aa-delete (aa-left Tree Key)) (aa-right Tree) (aa-level Tree))
-##             (unless (not (or (aa-left Tree) (aa-right Tree)))
-##                (if (not (aa-left Tree))
-##                   (let (L (successor Tree))
-##                      (list (aa-kv L) (aa-left Tree) (delete (aa-right Tree) (car (aa-kv L))) (aa-value L)) )
-##                   (let (L (predecessor Tree))
-##                      (list (aa-kv L) (delete (aa-left Tree) (car (aa-kv L))) (aa-right Tree) (aa-value L)) ) ) ) ) )
-##       (let (Tree2 (skew (decrease-level Tree))
-##             Tree3 
-##  )
-         
-      
-                  
+(de aa-delete (Key Tree)
+   (if (not Tree)
+      Tree
+      (let (PrunedTree
+            (if (> Key (car (aa-kv Tree)))
+               (aa-right Tree (aa-delete Key (aa-right Tree)))
+               (if (< Key (car (aa-kv Tree)))
+                  (aa-left Tree (aa-delete Key (aa-left Tree)))
+                  (if (not (or (aa-left Tree) (aa-right Tree)))
+                     NIL
+                     (if (not (aa-left Tree))
+                        (let (L (aa-successor Tree))
+                           (aa-kv (aa-right Tree (aa-delete (car (aa-kv L)) (aa-right Tree))) (aa-kv L)))
+                        (let (L (aa-predecessor Tree))
+                           (aa-kv (aa-left Tree (aa-delete (car (aa-kv L)) (aa-left Tree))) (aa-kv L)) ) ) ) ) )
+            storeP '((Val) (setq PrunedTree Val))
+            retrieveP '(() PrunedTree))
+         (storeP (aa-decrease-level (retrieveP)))
+         (storeP (aa-skew (retrieveP)))
+         (storeP (aa-right (retrieveP) (aa-skew (aa-right (retrieveP)))))
+         (unless (not (aa-right (retrieveP)))
+            (storeP (aa-right (aa-right (retrieveP)) (aa-skew (aa-right (aa-right (retrieveP)))))) )
+         (storeP (aa-split (retrieveP)))
+         (aa-right (retrieveP) (aa-split (aa-right (retrieveP)))) ) ) )
+
+(de aa-decrease-level (Tree)
+   (let (ShouldBe (min (aa-level (aa-left Tree)) (inc (aa-level (aa-right Tree)))))
+      (if (< ShouldBe (aa-level Tree))
+         (aa-level Tree ShouldBe)
+         (if (< ShouldBe (aa-level (aa-right Tree)))
+            (aa-level (aa-right Tree) ShouldBe)
+            Tree ) ) ) )
+
+(de aa-predecessor (Tree)
+   (let (WT (aa-left Tree))
+      (recur (WT)
+         (if (not (aa-right WT))
+            WT
+            (recurse (aa-right WT)) ) ) ) )
+
+(de aa-successor (Tree)
+   (let (WT (aa-right Tree))
+      (recur (WT)
+         (if (not (aa-left WT))
+            WT
+            (recurse (aa-left WT)) ) ) ))
+
+(de bst-new (Key Val)
+   (list Key Val NIL NIL) )
+
+(de bst-insert (Tree Key Val)
+   (if (== (car Tree) Key) (set (cdr Tree) Val)
+      (if (< Key (car Tree))
+         (if (not (caddr Tree))
+            (set (cddr Tree) (bst-new Key Val))
+            (bst-insert (caddr Tree) Key Val) )
+         (if (not (cadddr Tree))
+            (set (cdddr Tree) (bst-new Key Val))
+            (bst-insert (cadddr Tree) Key Val) ) ) )
+   Tree )
+
+(de bst-search (Tree Key)
+   (if (not Tree)
+      NIL
+      (if (== Key (car Tree))
+         (list (car Tree) (cadr Tree))
+         (if (< Key (car Tree))
+            (bst-search (caddr Tree) Key)
+            (bst-search (cadddr Tree) Key) ) ) ) )
+
