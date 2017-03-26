@@ -41,14 +41,9 @@
       (if (not (and (aa-right Tree) (aa-right (aa-right Tree))))
          Tree
          (if (== (aa-level Tree) (aa-level (aa-right (aa-right Tree))))
-            (list (aa-kv (aa-right Tree))
-               (list (aa-kv Tree) (aa-left Tree) (aa-left (aa-right Tree)) (aa-level Tree))
-               (aa-right Tree)
-               (inc (aa-level (aa-right Tree))) )
+            (aa-left (aa-level (aa-right Tree) (inc (aa-level Tree))) (aa-right Tree (aa-left (aa-right Tree))))
             Tree ) ) ) )
 
-
-# Buggy, needs fixing
 (de aa-insert (Key Val Tree)
    (if (not Tree)
       (list (list Key Val) NIL NIL 1)
@@ -60,6 +55,7 @@
                   (aa-left Tree (aa-insert Key Val (aa-left Tree)))
                   (aa-right Tree (aa-insert Key Val (aa-right Tree))) ) ) ) ) ) )
 
+# Buggy, needs fixing
 (de aa-delete (Key Tree)
    (if (not Tree)
       Tree
