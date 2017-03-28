@@ -101,7 +101,7 @@
       (recur (WT)
          (if (not (aa-left WT))
             WT
-            (recurse (aa-left WT)) ) ) ))
+            (recurse (aa-left WT)) ) ) ) )
 
 (de bst-new (Key Val)
    (list Key Val NIL NIL) )
