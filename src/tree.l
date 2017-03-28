@@ -55,7 +55,6 @@
                   (aa-left Tree (aa-insert Key Val (aa-left Tree)))
                   (aa-right Tree (aa-insert Key Val (aa-right Tree))) ) ) ) ) ) )
 
-# Buggy, needs fixing
 (de aa-delete (Key Tree)
    (if (not Tree)
       Tree
@@ -68,16 +67,24 @@
                      NIL
                      (if (not (aa-left Tree))
                         (let (L (aa-successor Tree))
-                           (aa-kv (aa-right Tree (aa-delete (car (aa-kv L)) (aa-right Tree))) (aa-kv L)))
+                           (aa-kv (aa-right Tree (aa-delete (car (aa-kv L)) (aa-right Tree))) (aa-kv L)) )
                         (let (L (aa-predecessor Tree))
                            (aa-kv (aa-left Tree (aa-delete (car (aa-kv L)) (aa-left Tree))) (aa-kv L)) ) ) ) ) )
             storeP '((Val) (setq PrunedTree Val))
-            retrieveP '(() PrunedTree))
+            retrieveP '(() PrunedTree) )
          (storeP (aa-decrease-level (retrieveP)))
          (storeP (aa-skew (retrieveP)))
          (storeP (aa-right (retrieveP) (aa-skew (aa-right (retrieveP)))))
          (unless (not (aa-right (retrieveP)))
-            (storeP (aa-right (aa-right (retrieveP)) (aa-skew (aa-right (aa-right (retrieveP)))))) )
+            (storeP
+               (aa-right
+                  (retrieveP)
+                  (aa-right
+                     (aa-right
+                        (retrieveP) )
+                        (aa-skew
+                           (aa-right
+                              (aa-right (retrieveP)) ) ) ) ) ) )
          (storeP (aa-split (retrieveP)))
          (aa-right (retrieveP) (aa-split (aa-right (retrieveP)))) ) ) )
 
