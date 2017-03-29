@@ -44,6 +44,11 @@
             (aa-left (aa-level (aa-right Tree) (inc (aa-level Tree))) (aa-right Tree (aa-left (aa-right Tree))))
             Tree ) ) ) )
 
+# (aa-insert 'any 'any 'aa-tree) -> aa-tree
+
+# Non-destructive insert operation. If `Key' matches a the key of a
+# node, the node will be replaced by a node containing the new
+# value. Can operate on an empty (NIL) tree.
 (de aa-insert (Key Val Tree)
    (if (not Tree)
       (list (list Key Val) NIL NIL 1)
@@ -52,9 +57,14 @@
             (if (== Key (car (aa-kv Tree)))
                (aa-kv Tree (list Key Val))
                (if (< Key (car (aa-kv Tree)))
-                  (aa-left Tree (aa-insert Key Val (aa-left Tree)))
-                  (aa-right Tree (aa-insert Key Val (aa-right Tree))) ) ) ) ) ) )
+                  (aa-left Tree
+                     (aa-insert Key Val (aa-left Tree)) )
+                  (aa-right Tree
+                     (aa-insert Key Val (aa-right Tree)) ) ) ) ) ) ) )
+# (aa-delete 'any 'aa-tree) -> aa-tree
 
+# Non-destructive delete operation. Requests that match no node will
+# be ignored.
 (de aa-delete (Key Tree)
    (if (not Tree)
       Tree
@@ -67,9 +77,19 @@
                      NIL
                      (if (not (aa-left Tree))
                         (let (L (aa-successor Tree))
-                           (aa-kv (aa-right Tree (aa-delete (car (aa-kv L)) (aa-right Tree))) (aa-kv L)) )
+                           (aa-kv
+                              (aa-right Tree
+                                 (aa-delete
+                                    (car (aa-kv L))
+                                    (aa-right Tree) ) )
+                              (aa-kv L) ) )
                         (let (L (aa-predecessor Tree))
-                           (aa-kv (aa-left Tree (aa-delete (car (aa-kv L)) (aa-left Tree))) (aa-kv L)) ) ) ) ) )
+                           (aa-kv
+                              (aa-left Tree
+                                 (aa-delete
+                                    (car (aa-kv L))
+                                    (aa-left Tree) ) )
+                              (aa-kv L) ) ) ) ) ) )
             storeP '((Val) (setq PrunedTree Val))
             retrieveP '(() PrunedTree) )
          (storeP (aa-decrease-level (retrieveP)))
@@ -89,12 +109,18 @@
          (aa-right (retrieveP) (aa-split (aa-right (retrieveP)))) ) ) )
 
 (de aa-decrease-level (Tree)
-   (let (ShouldBe (min (aa-level (aa-left Tree)) (inc (aa-level (aa-right Tree)))))
-      (if (< ShouldBe (aa-level Tree))
-         (aa-level Tree ShouldBe)
-         (if (< ShouldBe (aa-level (aa-right Tree)))
-            (aa-level (aa-right Tree) ShouldBe)
-            Tree ) ) ) )
+   (let (nilwrap '((X) (if (not X) 0 X))
+         WT Tree
+         ShouldBe (inc (min (nilwrap (aa-level (aa-left WT))) (nilwrap (aa-level (aa-right WT))))) )
+      (if (< ShouldBe (aa-level WT))
+         (prog (setq WT (aa-level WT ShouldBe))
+            (if (< ShouldBe (aa-level (aa-right WT)))
+               (setq WT
+                  (aa-right WT
+                     (aa-level
+                        (aa-right WT) ShouldBe)))))
+         NIL )
+      WT ) )
 
 (de aa-predecessor (Tree)
    (let (WT (aa-left Tree))
