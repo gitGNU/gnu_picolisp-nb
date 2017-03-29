@@ -68,9 +68,6 @@
             (call-long-desc RoomData)
             (set-visited RoomData) ) ) ) )
 
-   ## (let (Room (cadr (assoc Name Rooms)))
-   ##    ((cadr (assoc "long-desc-h" Room)) Room)))      
-
 (de init-rooms ()
    (setq Rooms
       '(
