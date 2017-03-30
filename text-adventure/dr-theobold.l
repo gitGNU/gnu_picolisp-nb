@@ -26,23 +26,27 @@
             (NilF)
             (TrueF (cadr Res)) ) ) ) )
 
+(de prinll @ (prog
+                (apply 'prinl (rest))
+                (prinl)))
+
 (de visited? (RoomData)
    (asscv RoomData "visited"
-      '(prinl "***Missing `visited' data, please report this bug.***")
+      '(prinll "***Missing `visited' data, please report this bug.***")
       '(nil-func)
       'id) )
 
 (de call-short-desc (RoomData)
    (asscv RoomData "short-desc-h"
-      '(prinl "***Missing short description, please report this bug.***")
-      '(prinl "***Missing short description, please report this bug.***")
-      '((Hook) (Hook RoomData)) ) )
+      '(prinll "***Missing short description, please report this bug.***")
+      '(prinll "***Missing short description, please report this bug.***")
+      '((Hook) (Hook)) ) )
 
 (de call-long-desc (RoomData)
    (asscv RoomData "long-desc-h"
-      '(prinl "***Missing long description, please report this bug.***")
-      '(prinl "***Missing long description, please report this bug.***")
-      '((Hook) (Hook RoomData)) ) )
+      '(prinll "***Missing long description, please report this bug.***")
+      '(prinll "***Missing long description, please report this bug.***")
+      '((Hook) (Hook)) ) )
 
 (de asscv-set (Lst Key Val MissF)
    (let (Elem (assoc Key Lst))
@@ -52,7 +56,7 @@
 
 (de set-visited (RoomData)
    (asscv-set RoomData "visited" T
-      '(prinl "***Missing `visited' data, please report this bug.***") ) )
+      '(prinll "***Missing `visited' data, please report this bug.***") ) )
 
 (de get-room-data (Name)
    (asscv Rooms Name
@@ -72,15 +76,15 @@
    (setq Rooms
       '(
         ("threshold"
-           (("short-desc-h" ((_) (prinl "Threshold")))
+           (("short-desc-h" (() (prinll "Threshold")))
             ("long-desc-h"
-               ((RoomData) (prog
-                          (prinl "You stand in front of a wooden door, reputed to be the home of one Dr. Theobold. The door has a small \
-                                   keyhole.")
-                          (asscv RoomData "mat-lumpy"
-                             '(prinl "***Missing game variable `mat-lumpy', please report this bug.***")
-                             '(nil-func)
-                             '((_) (prinl "The welcome mat is slightly lumpy")) ) ) ) )
+               (() (prog
+                      (prinll "You stand in front of a wooden door, reputed to be the home of one Dr. Theobold. The door has a small \
+                              keyhole.")
+                      (asscv RoomData "mat-lumpy"
+                         '(prinll "***Missing game variable `mat-lumpy', please report this bug.***")
+                         '(nil-func)
+                         '((_) (prinll "The welcome mat is slightly lumpy.")) ) ) ) )
             ("mat-lumpy" T)
             ("visited" NIL) ) )
         )
