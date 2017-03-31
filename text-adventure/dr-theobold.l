@@ -17,7 +17,7 @@
 (load "tree.l")
 
 (de world ARGLST
-   (setq World (aa-insert "Rooms" NIL NIL))
+   (setq World (aa-insert "rooms" NIL NIL))
    (run ARGLST)
    World )
 
@@ -27,7 +27,7 @@
       (setq World (aa-insert "location" (next) World)) ) )
 
 (de rooms ()
-   (cadr (aa-search World "Rooms")) )
+   (cadr (aa-search World "rooms")) )
 
 (de room ARGLST
    (if (not (car ARGLST))
@@ -36,8 +36,8 @@
          (run (cdr ARGLST))
          (setq World
             (aa-insert
-               Rooms
-               (aa-insert (car ARGLST) Room (rooms)) ) ) ) ) )
+               "rooms"
+               (aa-insert (car ARGLST) Room (rooms)) World ) ) ) ) )
 
 (de room-long-description (Description)
    (setq Room (aa-insert "long-description" Description Room)) )
@@ -46,7 +46,8 @@
    (world
       (location "threshold")
       (room "threshold"
-         (room-long-description "You stand in front of a wooden door, reputed to be the home of one Dr. Theobold. The door has a small \
-                                 keyhole.")
- ) ) )
+         (room-long-description "You stand in front of a wooden door, \
+                                 reputed to be the home of one Dr. \
+                                 Theobold. The door has a small keyhole."))
+ ) )
 
