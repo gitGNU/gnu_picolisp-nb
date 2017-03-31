@@ -14,83 +14,39 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(de id (X) X)
+(load "tree.l")
 
-(de nil-func () NIL)
+(de world ARGLST
+   (setq World (aa-insert "Rooms" NIL NIL))
+   (run ARGLST)
+   World )
 
-(de asscv (Lst Key MissF NilF TrueF)
-   (let (Res (assoc Key Lst))
-      (if (not Res)
-         (MissF)
-         (if (not (cadr Res))
-            (NilF)
-            (TrueF (cadr Res)) ) ) ) )
+(de location @
+   (if (not (arg 1))
+      (cadr (aa-search World "location"))
+      (setq World (aa-insert "location" (next) World)) ) )
 
-(de prinll @ (prog
-                (apply 'prinl (rest))
-                (prinl)))
+(de rooms ()
+   (cadr (aa-search World "Rooms")) )
 
-(de visited? (RoomData)
-   (asscv RoomData "visited"
-      '(prinll "***Missing `visited' data, please report this bug.***")
-      '(nil-func)
-      'id) )
+(de room ARGLST
+   (if (not (car ARGLST))
+      (quit "func `room' missing argument")
+      (let (Room ())
+         (run (cdr ARGLST))
+         (setq World
+            (aa-insert
+               Rooms
+               (aa-insert (car ARGLST) Room (rooms)) ) ) ) ) )
 
-(de call-short-desc (RoomData)
-   (asscv RoomData "short-desc-h"
-      '(prinll "***Missing short description, please report this bug.***")
-      '(prinll "***Missing short description, please report this bug.***")
-      '((Hook) (Hook)) ) )
+(de room-long-description (Description)
+   (setq Room (aa-insert "long-description" Description Room)) )
 
-(de call-long-desc (RoomData)
-   (asscv RoomData "long-desc-h"
-      '(prinll "***Missing long description, please report this bug.***")
-      '(prinll "***Missing long description, please report this bug.***")
-      '((Hook) (Hook)) ) )
-
-(de asscv-set (Lst Key Val MissF)
-   (let (Elem (assoc Key Lst))
-      (if (not Elem)
-         (MissF)
-         (con Elem (list Val)) ) ) )
-
-(de set-visited (RoomData)
-   (asscv-set RoomData "visited" T
-      '(prinll "***Missing `visited' data, please report this bug.***") ) )
-
-(de get-room-data (Name)
-   (asscv Rooms Name
-      '(throw "game-data-error" 'ERR-NO-ROOM-DATA)
-      '(throw "game-data-error" 'ERR-NO-ROOM-DATA)
-      'id ) )
-
-(de enter-room (Name)
-   (let (RoomData (get-room-data Name))
-      (if (visited? RoomData)
-         (call-short-desc RoomData)
-         (prog
-            (call-long-desc RoomData)
-            (set-visited RoomData) ) ) ) )
-
-(de init-rooms ()
-   (setq Rooms
-      '(
-        ("threshold"
-           (("short-desc-h" (() (prinll "Threshold")))
-            ("long-desc-h"
-               (() (prog
-                      (prinll "You stand in front of a wooden door, reputed to be the home of one Dr. Theobold. The door has a small \
-                              keyhole.")
-                      (asscv RoomData "mat-lumpy"
-                         '(prinll "***Missing game variable `mat-lumpy', please report this bug.***")
-                         '(nil-func)
-                         '((_) (prinll "The welcome mat is slightly lumpy.")) ) ) ) )
-            ("mat-lumpy" T)
-            ("visited" NIL) ) )
-        )
-      )
- )
-         
-       
-
+(de init-world ()
+   (world
+      (location "threshold")
+      (room "threshold"
+         (room-long-description "You stand in front of a wooden door, reputed to be the home of one Dr. Theobold. The door has a small \
+                                 keyhole.")
+ ) ) )
 
