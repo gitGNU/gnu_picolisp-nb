@@ -46,19 +46,31 @@
 (de room-long-description (Description)
    (setq Room (aa-insert "long-description" Description Room)) )
 
+(de room-command (Lst Fn)
+   (setq Room (aa-insert "room-commands"
+                 (aa-insert Lst Fn
+                    (aa-search Room "room-commands") )
+                 Room ) ) )
+   
 (de get-room (RoomID)
    (cdr (aa-search (rooms) RoomID)) )
 
 (de enter-room (RoomID)
    (location RoomID)
-   (prinll (cdr (aa-search (get-room RoomID) "long-description"))) )
+   (prinll (cdr (aa-search (get-room RoomID) "long-description"))) )   
 
 (de init-world ()
    (world
       (location "threshold")
       (room "threshold"
-         (room-long-description "You stand in front of a wooden door, \
-                                 reputed to be the home of one Dr. \
-                                 Theobold. The door has a small keyhole."))
+         (room-long-description "You are standing at the entrance to a \
+                                 building, reputed to be the home of one \
+                                 Dr. Theobold. The entrance is barred by \
+                                 a steel door. There is a five digit \
+                                 numeric keypad on the door. A rubber \
+                                 mat lines the threshold.")
+         (room-command '("search" "mat")
+            '(() (prinll "You found a small note. It is a picture of a \
+                          cherry pie." ) ) ) )
  ) )
 
