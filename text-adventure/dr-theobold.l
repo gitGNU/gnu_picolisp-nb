@@ -16,6 +16,10 @@
 
 (load "tree.l")
 
+(de prinll @ (prog
+                (apply 'prinl (rest))
+                (prinl)))
+
 (de world ARGLST
    (setq World (aa-insert "rooms" NIL NIL))
    (run ARGLST)
@@ -43,14 +47,11 @@
    (setq Room (aa-insert "long-description" Description Room)) )
 
 (de get-room (RoomID)
-   (aa-search (rooms) RoomID) )
+   (cdr (aa-search (rooms) RoomID)) )
 
-(de get-room-long-description (RoomID)
-   (aa-search (get-room RoomID) "long-description"))
-
-## (de enter-room (idsym)
-##    (location idsym)
-##    (prinll (cdr 
+(de enter-room (RoomID)
+   (location RoomID)
+   (prinll (cdr (aa-search (get-room RoomID) "long-description"))) )
 
 (de init-world ()
    (world
