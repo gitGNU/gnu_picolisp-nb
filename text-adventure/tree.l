@@ -73,11 +73,11 @@
 # value. Can operate on an empty (NIL) tree.
 (de aa-insert (Key Val Tree)
    (if (not Tree)
-      (list (list Key Val) NIL NIL 1)
+      (list (cons Key Val) NIL NIL 1)
       (aa-split
          (aa-skew
             (if (= Key (car (aa-kv Tree)))
-               (aa-kv Tree (list Key Val))
+               (aa-kv Tree (cons Key Val))
                (if (< Key (car (aa-kv Tree)))
                   (aa-left Tree
                      (aa-insert Key Val (aa-left Tree)) )

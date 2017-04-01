@@ -23,11 +23,11 @@
 
 (de location @
    (if (not (arg 1))
-      (cadr (aa-search World "location"))
+      (cdr (aa-search World "location"))
       (setq World (aa-insert "location" (next) World)) ) )
 
 (de rooms ()
-   (cadr (aa-search World "rooms")) )
+   (cdr (aa-search World "rooms")) )
 
 (de room ARGLST
    (if (not (car ARGLST))
@@ -41,6 +41,16 @@
 
 (de room-long-description (Description)
    (setq Room (aa-insert "long-description" Description Room)) )
+
+(de get-room (RoomID)
+   (aa-search (rooms) RoomID) )
+
+(de get-room-long-description (RoomID)
+   (aa-search (get-room RoomID) "long-description"))
+
+## (de enter-room (idsym)
+##    (location idsym)
+##    (prinll (cdr 
 
 (de init-world ()
    (world
