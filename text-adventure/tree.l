@@ -44,7 +44,7 @@
 
 (de aa-search (Tree Key)
    (unless (not Tree)
-      (if (== Key (car (aa-kv Tree)))
+      (if (= Key (car (aa-kv Tree)))
          (aa-kv Tree)
          (if (< Key (car (aa-kv Tree)))
             (aa-search (aa-left Tree) Key)
@@ -54,7 +54,7 @@
    (unless (not Tree)
       (if (not (aa-left Tree))
          Tree
-         (if (== (aa-level (aa-left Tree)) (aa-level Tree))
+         (if (= (aa-level (aa-left Tree)) (aa-level Tree))
             (aa-right (aa-left Tree) (aa-left Tree (aa-right (aa-left Tree))))
             Tree ) ) ) )
 
@@ -62,7 +62,7 @@
    (unless (not Tree)
       (if (not (and (aa-right Tree) (aa-right (aa-right Tree))))
          Tree
-         (if (== (aa-level Tree) (aa-level (aa-right (aa-right Tree))))
+         (if (= (aa-level Tree) (aa-level (aa-right (aa-right Tree))))
             (aa-left (aa-level (aa-right Tree) (inc (aa-level Tree))) (aa-right Tree (aa-left (aa-right Tree))))
             Tree ) ) ) )
 
@@ -76,7 +76,7 @@
       (list (list Key Val) NIL NIL 1)
       (aa-split
          (aa-skew
-            (if (== Key (car (aa-kv Tree)))
+            (if (= Key (car (aa-kv Tree)))
                (aa-kv Tree (list Key Val))
                (if (< Key (car (aa-kv Tree)))
                   (aa-left Tree
@@ -162,7 +162,7 @@
    (list Key Val NIL NIL) )
 
 (de bst-insert (Tree Key Val)
-   (if (== (car Tree) Key) (set (cdr Tree) Val)
+   (if (= (car Tree) Key) (set (cdr Tree) Val)
       (if (< Key (car Tree))
          (if (not (caddr Tree))
             (set (cddr Tree) (bst-new Key Val))
@@ -175,7 +175,7 @@
 (de bst-search (Tree Key)
    (if (not Tree)
       NIL
-      (if (== Key (car Tree))
+      (if (= Key (car Tree))
          (list (car Tree) (cadr Tree))
          (if (< Key (car Tree))
             (bst-search (caddr Tree) Key)
