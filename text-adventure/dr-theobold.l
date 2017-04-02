@@ -59,6 +59,22 @@
    (location RoomID)
    (prinll (cdr (aa-search (get-room RoomID) "long-description"))) )   
 
+(de read-loop ()
+   (loop
+      (let (Cmd (str (line T)))
+         (let (RoomCmd # NEEDS FIXING
+               (cdr
+                   (aa-search
+                      (cdr
+                         (aa-search
+                            (get-room (location))
+                            "room-commands" ) ) Cmd ) ) )
+            (if RoomCmd
+               (RoomCmd)
+               (if (or (= Cmd '("quit")) (= Cmd '("bye")))
+                  (prog (prinll "Goodbye!") (quit))
+                  (prinll "Nothing happens") ) ) ) ) ))
+            
 (de init-world ()
    (world
       (location "threshold")
