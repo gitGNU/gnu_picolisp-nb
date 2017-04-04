@@ -49,7 +49,7 @@
 (de room-command (Lst Fn)
    (setq Room (aa-insert "room-commands"
                  (aa-insert Lst Fn
-                    (aa-search Room "room-commands") )
+                    (cdr (aa-search Room "room-commands")) )
                  Room ) ) )
    
 (de get-room (RoomID)
@@ -62,7 +62,7 @@
 (de read-loop ()
    (loop
       (let (Cmd (str (line T)))
-         (let (RoomCmd # NEEDS FIXING
+         (let (RoomCmd
                (cdr
                    (aa-search
                       (cdr
@@ -74,7 +74,23 @@
                (if (or (= Cmd '("quit")) (= Cmd '("bye")))
                   (prog (prinll "Goodbye!") (quit))
                   (prinll "Nothing happens") ) ) ) ) ))
-            
+
+(de set-world-var (Name Val)
+   (setq World (aa-insert "variables"
+                  (aa-insert Name Val
+                     (aa-search World "variables") ) World ) ) )
+
+(de use-threshold-keypad ()
+   (prinll "Enter a five digit code:")
+   (let (Input (car (str (line T))))
+      (if (or (not (num? Input))
+             (< Input 0) (> Input 99999) )
+         (prinll "Five digits, please.")
+         (if (= Input 31415)
+            (prog (prinll "You hear a clicking sound.")
+               (set-world-var "threshold-door-unlocked" T))
+            (prinll "You input the code but nothing happens.") ) ) ) )
+
 (de init-world ()
    (world
       (location "threshold")
@@ -87,6 +103,9 @@
                                  mat lines the threshold.")
          (room-command '("search" "mat")
             '(() (prinll "You found a small note. It is a picture of a \
-                          cherry pie." ) ) ) )
- ) )
+                          cherry pie." ) ) )
+         (room-command '("use" "keypad") 'use-threshold-keypad)
+         ) ) )
+
+
 
