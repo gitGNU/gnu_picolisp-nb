@@ -42,6 +42,9 @@
 
 (record aa-kv aa-left aa-right aa-level)
 
+(de aa-search-val (Tree Key)
+   (cdr (aa-search Tree Key)))
+
 (de aa-search (Tree Key)
    (unless (not Tree)
       (if (= Key (car (aa-kv Tree)))

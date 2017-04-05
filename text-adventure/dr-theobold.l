@@ -27,11 +27,11 @@
 
 (de location @
    (if (not (arg 1))
-      (cdr (aa-search World "location"))
+      (aa-search-val World "location")
       (setq World (aa-insert "location" (next) World)) ) )
 
 (de rooms ()
-   (cdr (aa-search World "rooms")) )
+   (aa-search-val World "rooms") )
 
 (de room ARGLST
    (if (not (car ARGLST))
@@ -49,26 +49,24 @@
 (de room-command (Lst Fn)
    (setq Room (aa-insert "room-commands"
                  (aa-insert Lst Fn
-                    (cdr (aa-search Room "room-commands")) )
+                    (aa-search-val Room "room-commands") )
                  Room ) ) )
    
 (de get-room (RoomID)
-   (cdr (aa-search (rooms) RoomID)) )
+   (aa-search-val (rooms) RoomID) )
 
 (de enter-room (RoomID)
    (location RoomID)
-   (prinll (cdr (aa-search (get-room RoomID) "long-description"))) )   
+   (prinll (aa-search-val (get-room RoomID) "long-description")) )
 
 (de read-loop ()
    (loop
       (let (Cmd (str (line T)))
          (let (RoomCmd
-               (cdr
-                   (aa-search
-                      (cdr
-                         (aa-search
-                            (get-room (location))
-                            "room-commands" ) ) Cmd ) ) )
+               (aa-search-val
+                  (aa-search-val
+                     (get-room (location))
+                     "room-commands" ) Cmd ) )
             (if RoomCmd
                (RoomCmd)
                (if (or (= Cmd '("quit")) (= Cmd '("bye")))
@@ -78,7 +76,13 @@
 (de set-world-var (Name Val)
    (setq World (aa-insert "variables"
                   (aa-insert Name Val
-                     (aa-search World "variables") ) World ) ) )
+                     (aa-search-val World "variables") ) World ) ) )
+
+(de read-world-var (Name)
+   (aa-search-val (aa-search-val World "variables") Name) )
+
+(de room-exit ()
+   ())
 
 (de use-threshold-keypad ()
    (prinll "Enter a five digit code:")
@@ -105,7 +109,10 @@
             '(() (prinll "You found a small note. It is a picture of a \
                           cherry pie." ) ) )
          (room-command '("use" "keypad") 'use-threshold-keypad)
-         ) ) )
-
-
-
+         (room-exit "north" '(() (if (read-world-var "threshold-door-unlocked")
+                                    (enter-room "threshold")
+                                    (prinll "The door is locked") ) ) ) )
+      (room "atrium"
+         (room-long-description "You are in a room that has not yet \
+                                 been coded. Digital obvilion!") )
+ ) )
