@@ -52,6 +52,12 @@
                     (aa-search-val Room "room-commands") )
                  Room ) ) )
    
+(de room-exit (Direction Fn)
+   (setq Room (aa-insert "room-exits"
+                 (aa-insert Direction Fn
+                    (aa-search-val Room "room-exits") )
+                 Room ) ) )
+
 (de get-room (RoomID)
    (aa-search-val (rooms) RoomID) )
 
@@ -62,16 +68,24 @@
 (de read-loop ()
    (loop
       (let (Cmd (str (line T)))
-         (let (RoomCmd
-               (aa-search-val
+         (if (or (= Cmd '("quit")) (= Cmd '("bye")))
+            (prog (prinll "Goodbye!") (quit))
+            (let (RoomCmd
                   (aa-search-val
-                     (get-room (location))
-                     "room-commands" ) Cmd ) )
-            (if RoomCmd
-               (RoomCmd)
-               (if (or (= Cmd '("quit")) (= Cmd '("bye")))
-                  (prog (prinll "Goodbye!") (quit))
-                  (prinll "Nothing happens") ) ) ) ) ))
+                     (aa-search-val
+                        (get-room (location))
+                        "room-commands" ) Cmd ) )
+               (if RoomCmd
+                  (RoomCmd)
+                  (if (= (car Cmd) "go")
+                     (let (ExitCmd
+                        (aa-search-val
+                           (aa-search-val
+                              (get-room (location))
+                              "room-exits" ) (cadr Cmd) ) )
+                        (if ExitCmd
+                           (ExitCmd)
+                           (prinll "Nothing happens") ) ) ) ) ) ) ) ) )
 
 (de set-world-var (Name Val)
    (setq World (aa-insert "variables"
@@ -80,9 +94,6 @@
 
 (de read-world-var (Name)
    (aa-search-val (aa-search-val World "variables") Name) )
-
-(de room-exit ()
-   ())
 
 (de use-threshold-keypad ()
    (prinll "Enter a five digit code:")
@@ -110,7 +121,7 @@
                           cherry pie." ) ) )
          (room-command '("use" "keypad") 'use-threshold-keypad)
          (room-exit "north" '(() (if (read-world-var "threshold-door-unlocked")
-                                    (enter-room "threshold")
+                                    (enter-room "atrium")
                                     (prinll "The door is locked") ) ) ) )
       (room "atrium"
          (room-long-description "You are in a room that has not yet \
