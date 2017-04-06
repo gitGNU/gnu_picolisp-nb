@@ -67,9 +67,11 @@
 
 (de read-loop ()
    (loop
+      (prin "> ") (flush)
       (let (Cmd (str (line T)))
+         (prinl "")
          (if (or (= Cmd '("quit")) (= Cmd '("bye")))
-            (prog (prinll "Goodbye!") (quit))
+            (prog (prinll "Goodbye!") (bye))
             (let (RoomCmd
                   (aa-search-val
                      (aa-search-val
@@ -85,7 +87,8 @@
                               "room-exits" ) (cadr Cmd) ) )
                         (if ExitCmd
                            (ExitCmd)
-                           (prinll "Nothing happens") ) ) ) ) ) ) ) ) )
+                           (prinll "Nothing happens") ) )
+                     (prinll "Nothing happens") ) ) ) ) ) ) )
 
 (de set-world-var (Name Val)
    (setq World (aa-insert "variables"
@@ -96,15 +99,25 @@
    (aa-search-val (aa-search-val World "variables") Name) )
 
 (de use-threshold-keypad ()
-   (prinll "Enter a five digit code:")
+   (prin "Enter a five digit code: ") (flush)
    (let (Input (car (str (line T))))
       (if (or (not (num? Input))
              (< Input 0) (> Input 99999) )
          (prinll "Five digits, please.")
          (if (= Input 31415)
-            (prog (prinll "You hear a clicking sound.")
+            (prog (prinll "\nYou hear a clicking sound.")
                (set-world-var "threshold-door-unlocked" T))
-            (prinll "You input the code but nothing happens.") ) ) ) )
+            (prinll "\nYou input the code but nothing happens.") ) ) ) )
+
+(de start-game ()
+   (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
+      "Copyright (C) 2017 Christopher Howard" "\n"
+      "This program comes with ABSOLUTELY NO WARRANTY; for details type `warranty'." "\n"
+      "This is free software, and you are welcome to redistribute it \
+       under certain conditions; type `license' for details.")
+   (init-world)
+   (enter-room "threshold")
+   (read-loop) )
 
 (de init-world ()
    (world
