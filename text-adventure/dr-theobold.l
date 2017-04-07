@@ -65,6 +65,14 @@
    (location RoomID)
    (prinll (aa-search-val (get-room RoomID) "long-description")) )
 
+(de c-loop X
+   (let (continue '(() (throw 'CONTINUE NIL))
+         break '(() (throw 'BREAK NIL)))
+      (catch 'BREAK
+         (loop
+            (catch 'CONTINUE
+               (run X) ) ) ) ) )
+
 (de read-loop ()
    (loop
       (prin "> ") (flush)
