@@ -61,9 +61,12 @@
 (de get-room (RoomID)
    (aa-search-val (rooms) RoomID) )
 
+(de look-at-room (RoomID)
+   (prinll (aa-search-val (get-room RoomID) "long-description")) )
+
 (de enter-room (RoomID)
    (location RoomID)
-   (prinll (aa-search-val (get-room RoomID) "long-description")) )
+   (look-at-room RoomID) )
 
 (de c-loop X
    (let (continue '(() (throw 'CONTINUE NIL))
