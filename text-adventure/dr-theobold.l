@@ -74,29 +74,34 @@
                (run X) ) ) ) ) )
 
 (de read-loop ()
-   (loop
-      (prin "> ") (flush)
+   (c-loop
+      (prin "> ")
+      (flush)
       (let (Cmd (str (line T)))
          (prinl "")
-         (if (or (= Cmd '("quit")) (= Cmd '("bye")))
-            (prog (prinll "Goodbye!") (bye))
-            (let (RoomCmd
+         
+         (when (or (= Cmd '("quit")) (= Cmd '("bye")))
+            (prog (prinll "Goodbye!") (bye)) )
+         
+         (let (RoomCmd
+               (aa-search-val
+                  (aa-search-val
+                     (get-room (location))
+                     "room-commands" ) Cmd ) )
+            (when RoomCmd
+               (prog (RoomCmd) (continue)) ) )
+         
+         (if (= (car Cmd) "go")
+            (let (ExitCmd
                   (aa-search-val
                      (aa-search-val
                         (get-room (location))
-                        "room-commands" ) Cmd ) )
-               (if RoomCmd
-                  (RoomCmd)
-                  (if (= (car Cmd) "go")
-                     (let (ExitCmd
-                        (aa-search-val
-                           (aa-search-val
-                              (get-room (location))
-                              "room-exits" ) (cadr Cmd) ) )
-                        (if ExitCmd
-                           (ExitCmd)
-                           (prinll "Nothing happens") ) )
-                     (prinll "Nothing happens") ) ) ) ) ) ) )
+                        "room-exits" ) (cadr Cmd) ) )
+               (if ExitCmd
+                  (prog (ExitCmd) (continue))
+                  (prog (prinll "Nothing happens") (continue)) ) ) )
+         
+         (prinll "Nothing happens") ) ) )
 
 (de set-world-var (Name Val)
    (setq World (aa-insert "variables"
