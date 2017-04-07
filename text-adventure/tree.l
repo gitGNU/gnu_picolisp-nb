@@ -133,6 +133,22 @@
          (storeP (aa-split (retrieveP)))
          (aa-right (retrieveP) (aa-split (aa-right (retrieveP)))) ) ) )
 
+(de aa-flatten (Tree)
+   (let (L ()
+         Fn '((Tr)
+              (when Tr
+                 (setq L (cons (aa-kv Tr) L))
+                 (Fn (aa-left Tr))
+                 (Fn (aa-right Tr)) ) ) )
+      (Fn Tree)
+      L ) )
+
+(de aa-to-list (Tree)
+   (by 'car sort (aa-flatten Tree)) )
+
+(de aa-keys-to-list (Tree)
+   (mapcar 'car (aa-to-list Tree)))
+
 (de aa-decrease-level (Tree)
    (let (nilwrap '((X) (if (not X) 0 X))
          WT Tree

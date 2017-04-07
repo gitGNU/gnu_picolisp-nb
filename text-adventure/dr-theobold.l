@@ -61,8 +61,18 @@
 (de get-room (RoomID)
    (aa-search-val (rooms) RoomID) )
 
+(de print-exits (RoomID)
+   (let (Exit-Str
+         (glue ", "
+            (aa-keys-to-list
+               (aa-search-val
+                  (get-room RoomID) "room-exits" ) ) ) )
+      (when Exit-Str
+         (prinll "Exits: " Exit-Str))))
+
 (de look-at-room (RoomID)
-   (prinll (aa-search-val (get-room RoomID) "long-description")) )
+   (prinll (aa-search-val (get-room RoomID) "long-description"))
+   (print-exits RoomID))
 
 (de enter-room (RoomID)
    (location RoomID)
