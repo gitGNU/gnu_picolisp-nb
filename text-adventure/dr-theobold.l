@@ -92,6 +92,9 @@
       (flush)
       (let (Cmd (str (line T)))
          (prinl "")
+
+         (when (= Cmd '("look"))
+            (prog (look-at-room (location)) (continue)) )
          
          (when (or (= Cmd '("quit")) (= Cmd '("bye")))
             (prog (prinll "Goodbye!") (bye)) )
