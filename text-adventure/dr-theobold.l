@@ -86,6 +86,10 @@
             (catch 'CONTINUE
                (run X) ) ) ) ) )
 
+(de print-help ()
+   (prinll "Common commands are...\n\n"
+      "look, go <exit>, search <item>, use <item>, quit" ) )
+
 (de read-loop ()
    (c-loop
       (prin "> ")
@@ -93,6 +97,9 @@
       (let (Cmd (str (line T)))
          (prinl "")
 
+         (when (= Cmd '("help"))
+            (prog (print-help) (continue)))
+         
          (when (= Cmd '("look"))
             (prog (look-at-room (location)) (continue)) )
          
@@ -144,6 +151,7 @@
       "This program comes with ABSOLUTELY NO WARRANTY; for details type `warranty'." "\n"
       "This is free software, and you are welcome to redistribute it \
        under certain conditions; type `license' for details.")
+   (print-help)
    (init-world)
    (enter-room "threshold")
    (read-loop) )
@@ -167,5 +175,5 @@
                                     (prinll "The door is locked") ) ) ) )
       (room "atrium"
          (room-long-description "You are in a room that has not yet \
-                                 been coded. Digital obvilion!") )
+                                 been coded. Digital oblivion!") )
  ) )
