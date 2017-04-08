@@ -186,6 +186,15 @@
 
 (de use-crypto-tablet ()
    (prinll "The tablet displays a cryptogram:")
+   (let (EncMessage
+         " QBP C AZABGP OKWGFD AN JGXNFP HCWPNO, QBP OQPBGWW, QBP DNFFK:\n \
+           DNA HXQA RQB AXG OQB PN AXQA RNOGW QDAGA AXG LCBM?\n \
+           GSGB AXQA HXCRX XQW JGGB QFAGQPK PNBG."
+         DecMessage
+         " AND I TURNED MYSELF TO BEHOLD WISDOM, AND MADNESS, AND FOLLY:\n \
+           FOR WHAT CAN THE MAN DO THAT COMES AFTER THE KING?\n \
+           EVEN THAT WHICH HAS BEEN ALREADY DONE.")
+      )
    ## (c-loop
    ##    (let (Subst (read-world-var "crypto-tablet-substitutions"))
    ##       )
