@@ -186,10 +186,12 @@
 
 (de use-crypto-tablet ()
    (prinll "The tablet displays a cryptogram:")
+   (prinll "Enter a letter, a space, and then the letter you wish to \
+            substitute for it. If you wish to take a break, enter \"done\".")
    (let (EncMessage
-         "GPB J YZVPNB OXANUT YE RNDEUB IJABEO GPB OGBPNAA, GPB TEUUX:\n\
+         "GPB J YZVPNB OXANUT YE RNDEUB IJABEO, GPB OGBPNAA, GPB TEUUX:\n\
           TEV IDGY LGP YDN OGP BE YDGY LEONA GTYNV YDN HJPF?\n\
-          NMNP TDGY IDJLD DGA RNNP GUVNGBX BEPN."
+          NMNP YDGY IDJLD DGA RNNP GUVNGBX BEPN."
          DecMessage
          "AND I TURNED MYSELF TO BEHOLD WISDOM, AND MADNESS, AND FOLLY:\n\
           FOR WHAT CAN THE MAN DO THAT COMES AFTER THE KING?\n\
@@ -198,15 +200,25 @@
          (prin " ")
          (prinll (space-out EncMessage))
          (prin " ")
-         (prinll
-            (space-out
-               (cryptogram-encrypt
-                  EncMessage
-                  (read-world-var "crypto-tablet-substitutions") ) ) )
+         (let (RenderedMessage (cryptogram-encrypt
+                                  EncMessage
+                                  (read-world-var
+                                     "crypto-tablet-substitutions" ) ) )
+            (prinll
+               (space-out
+                  (cryptogram-encrypt
+                     EncMessage
+                     (read-world-var "crypto-tablet-substitutions") ) ) )
+            (when (= RenderedMessage DecMessage)
+               (prinll "The puzzle is complete! Your new code is...")
+               (prinll "BLUE-GREEN-BLUE")
+               (break) ) )
          (prin "> ")
          (flush)
          (let (Cmd (mapcar 'text (str (line T))))
+            (prinl)
             (when (= Cmd '("done"))
+               (prinll "You set the tablet back on the table.")
                (break) )
             (when (and
                    (letter? (car Cmd))
