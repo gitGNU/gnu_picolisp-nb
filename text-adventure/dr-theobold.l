@@ -276,5 +276,6 @@
                                  tablet is laying on the table.")
          (room-exit "south" '(() (enter-room "threshold")))
          (room-command '("use" "tablet") '(() (use-crypto-tablet)))
+         (room-command '("use" "computer" "tablet") '(() (use-crypto-tablet)))
          )
       ) )
