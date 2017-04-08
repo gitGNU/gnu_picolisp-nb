@@ -187,19 +187,45 @@
 (de use-crypto-tablet ()
    (prinll "The tablet displays a cryptogram:")
    (let (EncMessage
-         " QBP C AZABGP OKWGFD AN JGXNFP HCWPNO, QBP OQPBGWW, QBP DNFFK:\n \
-           DNA HXQA RQB AXG OQB PN AXQA RNOGW QDAGA AXG LCBM?\n \
-           GSGB AXQA HXCRX XQW JGGB QFAGQPK PNBG."
+         "GPB J YZVPNB OXANUT YE RNDEUB IJABEO GPB OGBPNAA, GPB TEUUX:\n\
+          TEV IDGY LGP YDN OGP BE YDGY LEONA GTYNV YDN HJPF?\n\
+          NMNP TDGY IDJLD DGA RNNP GUVNGBX BEPN."
          DecMessage
-         " AND I TURNED MYSELF TO BEHOLD WISDOM, AND MADNESS, AND FOLLY:\n \
-           FOR WHAT CAN THE MAN DO THAT COMES AFTER THE KING?\n \
-           EVEN THAT WHICH HAS BEEN ALREADY DONE.")
-      )
-   ## (c-loop
-   ##    (let (Subst (read-world-var "crypto-tablet-substitutions"))
-   ##       )
-   ##    (prinll 
- )
+         "AND I TURNED MYSELF TO BEHOLD WISDOM, AND MADNESS, AND FOLLY:\n\
+          FOR WHAT CAN THE MAN DO THAT COMES AFTER THE KING?\n\
+          EVEN THAT WHICH HAS BEEN ALREADY DONE." )
+      (c-loop
+         (prin " ")
+         (prinll (space-out EncMessage))
+         (prin " ")
+         (prinll
+            (space-out
+               (cryptogram-encrypt
+                  EncMessage
+                  (read-world-var "crypto-tablet-substitutions") ) ) )
+         (prin "> ")
+         (flush)
+         (let (Cmd (mapcar 'text (str (line T))))
+            (when (= Cmd '("done"))
+               (break) )
+            (when (and
+                   (letter? (car Cmd))
+                   (letter? (cadr Cmd)) )
+               (let (L1 (uppc (car Cmd))
+                     L2 (uppc (cadr Cmd)) )
+                  (when (rassoc
+                           L2
+                           (aa-to-list
+                              (read-world-var "crypto-tablet-substitutions") ) )
+                     (set-world-var
+                        "crypto-tablet-substitutions"
+                        (aa-delete
+                           (car @)
+                           (read-world-var "crypto-tablet-substitutions") ) ) )
+                  (set-world-var
+                     "crypto-tablet-substitutions"
+                     (aa-insert L1 L2
+                        (read-world-var "crypto-tablet-substitutions") ) ) ) ) ) ) ) )
 
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
@@ -237,6 +263,6 @@
                                  around a small table. A small computer \
                                  tablet is laying on the table.")
          (room-exit "south" '(() (enter-room "threshold")))
-         (room-command '("use" "tablet") (use-crypto-tablet))
+         (room-command '("use" "tablet") '(() (use-crypto-tablet)))
          )
       ) )
