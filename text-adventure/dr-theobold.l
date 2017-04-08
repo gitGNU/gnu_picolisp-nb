@@ -167,6 +167,24 @@
                (set-world-var "threshold-door-unlocked" T))
             (prinll "\nYou input the code but nothing happens.") ) ) ) )
 
+(de letter? (C) (and (str? C)
+                   (or (and (>= C "A") (<= C "Z"))
+                      (and (>= C "a") (<= C "z")) ) ) )
+
+## (de cryptogram-encrypt (Message Subs)
+##    (let (SubFn
+##          '((C) ()
+##          )
+##       (glue "" (mapcar 'SubFn (chop Message))) ) )
+
+(de use-crypto-tablet ()
+   (prinll "The tablet displays a cryptogram:")
+   ## (c-loop
+   ##    (let (Subst (read-world-var "crypto-tablet-substitutions"))
+   ##       )
+   ##    (prinll 
+ )
+
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
       "Copyright (C) 2017 Christopher Howard" "\n"
@@ -196,6 +214,13 @@
                                     (enter-room "atrium")
                                     (prinll "The door is locked") ) ) ) )
       (room "atrium"
-         (room-long-description "You are in a room that has not yet \
-                                 been coded. Digital oblivion!") )
- ) )
+         (room-long-description "You are in a large atrium. The walls are \
+                                 covered in ornate carvings. The room is \
+                                 mostly open and empty except a few chairs \
+                                 and couches in the middle, centered \
+                                 around a small table. A small computer \
+                                 tablet is laying on the table.")
+         (room-exit "south" '(() (enter-room "threshold")))
+         (room-command '("use" "tablet") (use-crypto-tablet))
+         )
+      ) )
