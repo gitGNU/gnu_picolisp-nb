@@ -171,11 +171,18 @@
                    (or (and (>= C "A") (<= C "Z"))
                       (and (>= C "a") (<= C "z")) ) ) )
 
-## (de cryptogram-encrypt (Message Subs)
-##    (let (SubFn
-##          '((C) ()
-##          )
-##       (glue "" (mapcar 'SubFn (chop Message))) ) )
+(de cryptogram-encrypt (Message SubsTree)
+   (let (SubFn
+         '((C) (if (not (letter? C))
+                  C
+                  (let (UC (uppc C))
+                     (if (aa-search-val SubsTree UC)
+                        @
+                        "_" ) ) ) ) )
+      (glue "" (mapcar 'SubFn (chop Message))) ) )
+
+(de space-out (Str)
+   (glue " " (chop Str)) )
 
 (de use-crypto-tablet ()
    (prinll "The tablet displays a cryptogram:")
