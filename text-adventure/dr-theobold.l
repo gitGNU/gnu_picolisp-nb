@@ -303,10 +303,20 @@
          (room-long-description "You are in a cozy living room with a \
                                  fuzzy carpet and plush furniture. An \
                                  old-fashioned radio leans against the \
-                                 wall. You also see an small elevator.")
+                                 wall. You also see an small elevator. \
+                                 There are doors on the west, east, and \
+                                 north walls.")
          (room-exit "west" '(() (enter-room "atrium")))
+         (room-exit "north" '(() (prinll "The door is locked")))
+         (room-exit "east" '(() (enter-room "kitchen")))
          (room-exit "down" '(() (prinll "The elevator does not appear to be functional.")))
          (room-command '("use" "radio") '(() (use-old-radio)))
          (room-command '("use" "old" "radio") '(() (use-old-radio)))
-         (room-command '("use" "old-fashioned" "radio") '(() (use-old-radio))))
+         (room-command '("use" "old-fashioned" "radio") '(() (use-old-radio))) )
+      (room "kitchen"
+         (room-long-description "You find a kitchen that is \
+                                 sophisticated but slightly messy. \
+                                 Remnants of frozen dinner packaging \
+                                 decorate the counter tops.")
+         (room-exit "west" '(() (enter-room "living-room"))) )
  ) )
