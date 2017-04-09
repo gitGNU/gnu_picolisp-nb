@@ -240,7 +240,23 @@
                         (read-world-var "crypto-tablet-substitutions") ) ) ) ) ) ) ) )
 
 (de use-old-radio ()
-   (prinll "You turn the knobs, but nothing happens.") )
+   (prinll "You turn the tuning knob a little. You hear some static and \
+            crackling as you settle on a station.")
+   (case (rand 1 10)
+      (1 (prinll "\"...Who knows what evil lurks in the hearts of men? The \
+                    Shadow knows...\"") )
+      (2 (prinll "\"...Ladies and gentlemen. The story you are about to \
+                    hear is true. The names have been changed to \
+                    protect the innocent...\"") )
+      (3 (prinll "\"...Who's afraid of the big bad wolf? Tra la la la la...\""))
+      (4 (prinll "\"...Hi-yo, Silver, away!...\""))
+      (5 (prinll "\"...And the gold of her hair, crowns the blue of her eyes...\""))
+      (6 (prinll "\"...We didn't exactly believe your story, Miss \
+                       Wonderly. We believed your 200 dollars...\""))
+      (7 (prinll "You hear the gentle notes of the Blue Danube."))
+      (8 (prinll "You hear Sinatra's velvety voice singing \"Close To You\"."))
+      (9 (prinll "You hear the fiery oration of a fundamentalist preacher."))
+      (10 (prinll "You hear a jazzy tune you don't recognize."))))
 
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
