@@ -239,6 +239,9 @@
                      (aa-insert L1 L2
                         (read-world-var "crypto-tablet-substitutions") ) ) ) ) ) ) ) )
 
+(de use-old-radio ()
+   (prinll "You turn the knobs, but nothing happens.") )
+
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
       "Copyright (C) 2017 Christopher Howard" "\n"
@@ -273,9 +276,21 @@
                                  mostly open and empty except a few chairs \
                                  and couches in the middle, centered \
                                  around a small table. A small computer \
-                                 tablet is laying on the table.")
+                                 tablet is laying on the table. There are \
+                                 doors heading back out to the atrium, \
+                                 and another door into a living room.")
          (room-exit "south" '(() (enter-room "threshold")))
+         (room-exit "east" '(() (enter-room "living-room")))
          (room-command '("use" "tablet") '(() (use-crypto-tablet)))
-         (room-command '("use" "computer" "tablet") '(() (use-crypto-tablet)))
-         )
-      ) )
+         (room-command '("use" "computer" "tablet") '(() (use-crypto-tablet))) )
+      (room "living-room"
+         (room-long-description "You are in a cozy living room with a \
+                                 fuzzy carpet and plush furniture. An \
+                                 old-fashioned radio leans against the \
+                                 wall. You also see an small elevator.")
+         (room-exit "west" '(() (enter-room "atrium")))
+         (room-exit "down" '(() (prinll "The elevator does not appear to be functional.")))
+         (room-command '("use" "radio") '(() (use-old-radio)))
+         (room-command '("use" "old" "radio") '(() (use-old-radio)))
+         (room-command '("use" "old-fashioned" "radio") '(() (use-old-radio))))
+ ) )
