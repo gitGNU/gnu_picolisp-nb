@@ -242,7 +242,7 @@
 (de use-old-radio ()
    (prinll "You turn the tuning knob a little. You hear some static and \
             crackling as you settle on a station.")
-   (case (rand 1 10)
+   (case (rand 1 11)
       (1 (prinll "\"...Who knows what evil lurks in the hearts of men? The \
                     Shadow knows...\"") )
       (2 (prinll "\"...Ladies and gentlemen. The story you are about to \
@@ -256,7 +256,8 @@
       (7 (prinll "You hear the gentle notes of the Blue Danube."))
       (8 (prinll "You hear Sinatra's velvety voice singing \"Close To You\"."))
       (9 (prinll "You hear the fiery oration of a fundamentalist preacher."))
-      (10 (prinll "You hear a jazzy tune you don't recognize."))))
+      (10 (prinll "\"...speak 'friend' and enter...\""))
+      (11 (prinll "You hear a jazzy tune you don't recognize."))))
 
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
@@ -309,9 +310,19 @@
          (room-exit "west" '(() (enter-room "atrium")))
          (room-exit "north" '(() (prinll "The door is locked")))
          (room-exit "east" '(() (enter-room "kitchen")))
-         (room-exit "down" '(() (prinll "The elevator does not appear to be functional.")))
+         (room-exit "down" '(() (if (read-world-var "elevator-unlocked")
+                                   (enter-room "puzzle-hub")
+                                   (prinll "The elevator does not appear to be functional.") ) ) )
          (room-command '("use" "radio") '(() (use-old-radio)))
          (room-command '("use" "old" "radio") '(() (use-old-radio)))
+         (let (elevator-release '(() (prog
+                                        (prinll "You hear a buzzing noise \
+                                                 coming from the elevator.")
+                                        (set-world-var "elevator-unlocked" T) ) ) )
+            (room-command '("speak" "friend") elevator-release)
+            (room-command '("speak" "\"friend\"") elevator-release)
+            (room-command '("say" "friend") elevator-release)
+            (room-command '("say" "\"friend\"") elevator-release) )
          (room-command '("use" "old-fashioned" "radio") '(() (use-old-radio))) )
       (room "kitchen"
          (room-long-description "You find a kitchen that is \
@@ -319,4 +330,7 @@
                                  Remnants of frozen dinner packaging \
                                  decorate the counter tops.")
          (room-exit "west" '(() (enter-room "living-room"))) )
+      (room "puzzle-hub"
+         (room-long-description "You are in a room that has not yet been coded! Digital oblivion!")
+         (room-exit "up" '(() (enter-room "living-room"))) )
  ) )
