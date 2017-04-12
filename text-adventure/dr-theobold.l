@@ -259,6 +259,21 @@
       (10 (prinll "\"...speak 'friend' and enter...\""))
       (11 (prinll "You hear a jazzy tune you don't recognize."))))
 
+(de llg-print-levers (Levers)
+   (prinl)
+   (for Row 4
+      (for Col 4
+         (if (= (car (nth Levers Row)) Col)
+            (prin "    " Row " ===")
+            (prin "    " Row " | |") ) )
+         (prinl) )
+   (prinl) )
+
+(de lever-logic-game ()
+   (unless (read-world-var "lever-logic-game")
+      (set-world-var "lever-logic-game" (1 2 3 4)) )
+   NIL)
+
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
       "Copyright (C) 2017 Christopher Howard" "\n"
