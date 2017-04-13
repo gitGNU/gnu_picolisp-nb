@@ -301,6 +301,22 @@
                   (recurse (inc Col) B (inc W))
                   (recurse (inc Col) B W) ) ) ) ) ) )
 
+(de llg-analysis-to-states (Analysis)
+   (let (States NIL
+         B (car Analysis)
+         W (cadr Analysis))
+      (recur (States B W)
+         (if (= (length States) 4)
+            States
+            (if (> B 0)
+               (recurse
+                  (append States (list 2)) (dec B) W )
+               (if (> W 0)
+                  (recurse
+                     (append States (list 1)) B (dec W) )
+                  (recurse
+                     (append States (list 0)) B W ) ) ) ) ) ) )
+
 (de llg-print-levers (Levers)
    (prinl)
    (for Row 4
