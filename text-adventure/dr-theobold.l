@@ -290,17 +290,40 @@
          (prinl " |") )
       (prinll "|_______________________________________|") ) )
 
-(de llg-analyze-guess (Levers Solution)
-   (let (Col 1 B 0 W 0)
-      (recur (Col B W)
+(de llg-eliminate-blacks (Levers Solution)
+   (let (Col 1
+         RemLevers NIL
+         RemSol NIL)
+      (recur (Col RemLevers RemSol)
          (if (= Col 5)
-            (list B W)
+            (list RemLevers RemSol)
             (if (= (car (nth Levers Col)) (car (nth Solution Col)))
-               (recurse (inc Col) (inc B) W)
-               (if (member (car (nth Levers Col)) Solution)
-                  (recurse (inc Col) B (inc W))
-                  (recurse (inc Col) B W) ) ) ) ) ) )
+               (recurse (inc Col) RemLevers RemSol)
+               (recurse
+                  (inc Col)
+                  (append
+                     RemLevers
+                     (list (car (nth Levers Col))) )
+                  (append
+                     RemSol
+                     (list (car (nth Solution Col))) ) ) ) ) ) ) )
 
+(de llg-white-count (RemLev RemSol)
+   (let (Cnt 0)
+      (recur (RemLev RemSol Cnt)
+         (if (not RemLev)
+            Cnt
+            (if (member (car RemLev) RemSol)
+               (recurse (cdr RemLev) (delete (car RemLev) RemSol) (inc Cnt))
+               (recurse (cdr RemLev) RemSol Cnt) ) ) ) ) )
+      
+
+(de llg-analyze-guess (Levers Solution)
+   (let (Filtered (llg-eliminate-blacks Levers Solution))
+      (list
+         (- 4 (length (car Filtered)))
+         (llg-white-count (car Filtered) (cadr Filtered)) ) ) )
+   
 (de llg-analysis-to-states (Analysis)
    (let (States NIL
          B (car Analysis)
@@ -327,10 +350,11 @@
          (prinl) )
    (prinl) )
 
-(de lever-logic-game ()
-   (unless (read-world-var "lever-logic-game")
-      (set-world-var "lever-logic-game" (1 2 3 4)) )
-   NIL)
+## (de lever-logic-game ()
+##    (let Solution (3 2 4 2)
+##    (unless (read-world-var "lever-logic-game")
+##       (set-world-var "lever-logic-game" (1 1 1 1)) )
+##    (llg-print-led (
 
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
