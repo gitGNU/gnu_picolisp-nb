@@ -290,6 +290,17 @@
          (prinl " |") )
       (prinll "|_______________________________________|") ) )
 
+(de llg-analyze-guess (Levers Solution)
+   (let (Col 1 B 0 W 0)
+      (recur (Col B W)
+         (if (= Col 5)
+            (list B W)
+            (if (= (car (nth Levers Col)) (car (nth Solution Col)))
+               (recurse (inc Col) (inc B) W)
+               (if (member (car (nth Levers Col)) Solution)
+                  (recurse (inc Col) B (inc W))
+                  (recurse (inc Col) B W) ) ) ) ) ) )
+
 (de llg-print-levers (Levers)
    (prinl)
    (for Row 4
