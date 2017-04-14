@@ -344,17 +344,38 @@
    (prinl)
    (for Row 4
       (for Col 4
-         (if (= (car (nth Levers Row)) Col)
+         (if (= (car (nth Levers Col)) Row)
             (prin "    " Row " ===")
             (prin "    " Row " | |") ) )
          (prinl) )
    (prinl) )
 
-## (de lever-logic-game ()
-##    (let Solution (3 2 4 2)
-##    (unless (read-world-var "lever-logic-game")
-##       (set-world-var "lever-logic-game" (1 1 1 1)) )
-##    (llg-print-led (
+(de lever-logic-game ()
+   (let Solution (3 2 1 2)
+   (unless (read-world-var "lever-logic-game-guess")
+      (set-world-var "lever-logic-game-guess" (4 4 4 4)) )
+   (c-loop
+      (llg-print-led
+         (llg-analysis-to-states
+            (llg-analyze-guess
+               (read-world-var "lever-logic-game-guess") Solution) ) )
+      (llg-print-levers (read-world-var "lever-logic-game-guess"))
+      (let (Cmd (str (line T)))
+         (if (not
+                (and
+                   (num? (car Cmd))
+                   (num? (cadr Cmd))
+                   (<= 1 (car Cmd) 4)
+                   (<= 1 (cadr Cmd) 4)))
+            (prog
+               (prinll "Wrong format.")
+               (continue) )
+            (set-world-var
+               "lever-logic-game-guess"
+               (place
+                  (car Cmd)
+                  (read-world-var "lever-logic-game-guess")
+                  (cadr Cmd) ) ) ) ) ) ) )
 
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
