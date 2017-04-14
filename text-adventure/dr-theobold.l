@@ -288,7 +288,7 @@
                   LstIdx (+ (* MRow 4) Letter) )
                (prin (car (nth Matrix LstIdx))) ) )
          (prinl " |") )
-      (prinll "|_______________________________________|") ) )
+      (prinl "|_______________________________________|") ) )
 
 (de llg-eliminate-blacks (Levers Solution)
    (let (Col 1
@@ -341,41 +341,48 @@
                      (append States (list 0)) B W ) ) ) ) ) ) )
 
 (de llg-print-levers (Levers)
-   (prinl)
+   (prinll "\n       1        2        3        4")
    (for Row 4
       (for Col 4
          (if (= (car (nth Levers Col)) Row)
             (prin "    " Row " ===")
-            (prin "    " Row " | |") ) )
-         (prinl) )
+            (prin "    " Row "  | ") ) )
+      (prinl) )
    (prinl) )
 
 (de lever-logic-game ()
    (let Solution (3 2 1 2)
-   (unless (read-world-var "lever-logic-game-guess")
-      (set-world-var "lever-logic-game-guess" (4 4 4 4)) )
-   (c-loop
-      (llg-print-led
-         (llg-analysis-to-states
-            (llg-analyze-guess
-               (read-world-var "lever-logic-game-guess") Solution) ) )
-      (llg-print-levers (read-world-var "lever-logic-game-guess"))
-      (let (Cmd (str (line T)))
-         (if (not
-                (and
-                   (num? (car Cmd))
-                   (num? (cadr Cmd))
-                   (<= 1 (car Cmd) 4)
-                   (<= 1 (cadr Cmd) 4)))
-            (prog
-               (prinll "Wrong format.")
-               (continue) )
-            (set-world-var
-               "lever-logic-game-guess"
-               (place
-                  (car Cmd)
-                  (read-world-var "lever-logic-game-guess")
-                  (cadr Cmd) ) ) ) ) ) ) )
+      (unless (read-world-var "lever-logic-game-guess")
+         (set-world-var "lever-logic-game-guess" (4 4 4 4)) )
+      (c-loop
+         (llg-print-led
+            (llg-analysis-to-states
+               (llg-analyze-guess
+                  (read-world-var "lever-logic-game-guess") Solution ) ) )
+         (llg-print-levers (read-world-var "lever-logic-game-guess"))
+         (when (= (read-world-var "lever-logic-game-guess") Solution)
+            (prog (prinll "The screen flashes \"Puzzle Complete\"")
+               (break)))
+         (prinll "To change a lever, enter the number of the lever \
+                  (1-4), a space, and then the lever setting (1-4). \
+                  To take a break, enter \"done\".")
+         (let (Cmd (str (line T)))
+            (when (= Cmd '(done)) break)
+            (if (not
+                   (and
+                      (num? (car Cmd))
+                      (num? (cadr Cmd))
+                      (<= 1 (car Cmd) 4)
+                      (<= 1 (cadr Cmd) 4) ) )
+               (prog
+                  (prinll "Wrong format.")
+                  (continue) )
+               (set-world-var
+                  "lever-logic-game-guess"
+                  (place
+                     (car Cmd)
+                     (read-world-var "lever-logic-game-guess")
+                     (cadr Cmd) ) ) ) ) ) ) )
 
 (de start-game ()
    (prinll "\n" "Dr. Theobold: A Text Adventure Game" "\n"
