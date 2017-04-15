@@ -325,10 +325,18 @@
             (room-command '("say" "\"friend\"") elevator-release) )
          (room-command '("use" "old-fashioned" "radio") '(() (use-old-radio))) )
       (room "kitchen"
-         (room-long-description "You find a kitchen that is \
-                                 sophisticated but slightly messy. \
-                                 Remnants of frozen dinner packaging \
-                                 decorate the counter tops.")
+         (room-long-description
+            "You find a kitchen that is sophisticated but slightly \
+             messy. Remnants of frozen dinner packaging decorate the \
+             counter tops. You see a refigerator, and also a bulky \
+             microwave with several tubes connected to it." )
+         (room-command '("look" "at" "microwave")
+            '(() (prog
+                    (prinll "You see a label:")
+                    (prinll "WARNING: POWERED BY FUSION. TEST \
+                             CONTAINMENT COILS REGULARLY. COOKING \
+                             TEMPERATURES MAY NOT MATCH CONVENTIONAL \
+                             MICROWAVES." ) ) ) )
          (room-exit "west" '(() (enter-room "living-room"))) )
       (room "puzzle-hub"
          (room-long-description "You are in a room that has not yet been coded! Digital oblivion!")
