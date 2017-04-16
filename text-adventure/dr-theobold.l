@@ -156,6 +156,14 @@
 (de read-world-var (Name)
    (aa-search-val (aa-search-val World "variables") Name) )
 
+(de add-to-inventory (ItemName)
+   (setq World (aa-insert "inventory"
+                  (aa-insert ItemName NIL
+                     (aa-search-val World "inventory") ) World ) ) )
+
+(de inventory-contains? (ItemName)
+   (car (aa-search (aa-search World "inventory") ItemName)) )
+
 (de use-threshold-keypad ()
    (prin "Enter a five digit code: ") (flush)
    (let (Input (car (str (line T))))
@@ -328,7 +336,7 @@
          (room-long-description
             "You find a kitchen that is sophisticated but slightly \
              messy. Remnants of frozen dinner packaging decorate the \
-             counter tops. You see a refigerator, and also a bulky \
+             counter tops. You see a refrigerator, and also a bulky \
              microwave with several tubes connected to it." )
          (room-command '("look" "at" "microwave")
             '(() (prog
@@ -337,6 +345,12 @@
                              CONTAINMENT COILS REGULARLY. COOKING \
                              TEMPERATURES MAY NOT MATCH CONVENTIONAL \
                              MICROWAVES." ) ) ) )
+         (room-command '("search" "refrigerator")
+            '(() (prog
+                    (prinll "You found some eggs.")
+                    (unless (inventory-contains? "egg")
+                       (add-to-inventory "egg")
+                       (prinll "An egg has been added to your inventory.") ) ) ) )
          (room-exit "west" '(() (enter-room "living-room"))) )
       (room "puzzle-hub"
          (room-long-description "You are in a room that has not yet been coded! Digital oblivion!")
