@@ -106,6 +106,17 @@
       "You should have received a copy of the GNU General Public License\n"
       "along with this program.  If not, see <http://www.gnu.org/licenses/>."))
 
+(de print-inventory ()
+   (let (inventory-lst
+         (sort
+            (aa-to-list
+               (aa-search-val World "inventory") ) ) )
+      (if (not inventory-lst)
+         (prinll "You are not carrying anything.")
+         (prog
+            (prinll "Your are carrying the following items:")
+            (prinll (glue " " inventory-lst)) ) ) ) )
+
 (de read-loop ()
    (c-loop
       (prin "> ")
@@ -127,6 +138,9 @@
          
          (when (or (= Cmd '("quit")) (= Cmd '("bye")))
             (prog (prinll "Goodbye!") (bye)) )
+
+         (when (or (= Cmd '("inventory")) (= Cmd '("show" "inventory")))
+            (prog (print-inventory) (continue)) )
          
          (let (RoomCmd
                (aa-search-val
