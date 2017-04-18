@@ -370,6 +370,15 @@
                     (unless (inventory-contains? "egg")
                        (add-to-inventory "egg")
                        (prinll "An egg has been added to your inventory.") ) ) ) )
+         (room-command '("put" "egg" "in" "microwave")
+            '(() (if (not (inventory-contains? "egg"))
+                    (prinll "You do not have an egg.")
+                    (if (read-world-var "microwave-contents")
+                       (prinll "The microwave already has something in it.")
+                       (prog
+                          (set-world-var "microwave-contents" "egg")
+                          (remove-from-inventory "egg")
+                          (prinll "You put an egg in the microwave.") ) ) ) ) )
          (room-exit "west" '(() (enter-room "living-room"))) )
       (room "puzzle-hub"
          (room-long-description "You are in a room that has not yet been coded! Digital oblivion!")
