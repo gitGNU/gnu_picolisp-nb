@@ -175,6 +175,11 @@
                   (aa-insert ItemName NIL
                      (aa-search-val World "inventory") ) World ) ) )
 
+(de remove-from-inventory (ItemName)
+   (setq World (aa-insert "inventory"
+                  (aa-delete ItemName
+                     (aa-search-val World "inventory") ) World ) ) )
+
 (de inventory-contains? (ItemName)
    (car (aa-search (aa-search World "inventory") ItemName)) )
 
