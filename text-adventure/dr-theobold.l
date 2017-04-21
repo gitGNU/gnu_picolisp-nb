@@ -109,8 +109,9 @@
 (de print-inventory ()
    (let (inventory-lst
          (sort
-            (aa-to-list
-               (aa-search-val World "inventory") ) ) )
+            (mapcar 'car
+               (aa-to-list
+                  (aa-search-val World "inventory") ) ) ) )
       (if (not inventory-lst)
          (prinll "You are not carrying anything.")
          (prog
@@ -170,9 +171,9 @@
 (de read-world-var (Name)
    (aa-search-val (aa-search-val World "variables") Name) )
 
-(de add-to-inventory (ItemName)
+(de add-to-inventory (ItemName ItemData)
    (setq World (aa-insert "inventory"
-                  (aa-insert ItemName NIL
+                  (aa-insert ItemName ItemData
                      (aa-search-val World "inventory") ) World ) ) )
 
 (de remove-from-inventory (ItemName)
@@ -181,7 +182,10 @@
                      (aa-search-val World "inventory") ) World ) ) )
 
 (de inventory-contains? (ItemName)
-   (car (aa-search (aa-search World "inventory") ItemName)) )
+   (car (aa-search (aa-search-val World "inventory") ItemName)) )
+
+(de get-inventory-data (ItemName)
+   (aa-search-val (aa-search-val World "inventory") ItemName) )
 
 (de use-threshold-keypad ()
    (prin "Enter a five digit code: ") (flush)
@@ -367,8 +371,12 @@
          (room-command '("search" "refrigerator")
             '(() (prog
                     (prinll "You found some eggs.")
+                    (if (not (read-world-var "egg-counter"))
+                       (set-world-var "egg-counter" 1)
+                       (set-world-var "egg-counter" (inc (read-world-var "egg-counter"))) )
                     (unless (inventory-contains? "egg")
-                       (add-to-inventory "egg")
+                       (add-to-inventory "egg"
+                          (= (read-world-var "egg-counter") 4) )
                        (prinll "An egg has been added to your inventory.") ) ) ) )
          (room-command '("put" "egg" "in" "microwave")
             '(() (if (not (inventory-contains? "egg"))
@@ -379,6 +387,14 @@
                           (set-world-var "microwave-contents" "egg")
                           (remove-from-inventory "egg")
                           (prinll "You put an egg in the microwave.") ) ) ) ) )
+         (room-command '("break" "egg")
+            '(() (if (not (inventory-contains? "egg"))
+                    (prinll "You do not have an egg.")
+                    (if (get-inventory-data "egg")
+                       (prinll "Surprisingly, the egg is solid and does not break.")
+                       (prog
+                          (remove-from-inventory "egg")
+                          (prinll "The egg cracks and leaves a mess on the floor.") ) ) ) ) )
          (room-exit "west" '(() (enter-room "living-room"))) )
       (room "puzzle-hub"
          (room-long-description "You are in a room that has not yet been coded! Digital oblivion!")
