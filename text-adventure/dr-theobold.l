@@ -118,6 +118,24 @@
             (prinll "Your are carrying the following items:")
             (prinll (glue " " inventory-lst)) ) ) ) )
 
+(de handle-unhandled-cmd (Cmd)
+   (cond
+      ((= (head 2 Cmd) '("look" "at"))
+       (prinll "You notice nothing of interest.") )
+      ((= Cmd '("search"))
+       (prinll "You must search some thing, like \"search cabinet\".") )
+      ((= (car Cmd) "search")
+       (prinll "You find nothing of interest.") )
+      ((= (car Cmd) "put")
+       (prinll "You cannot do that.") )
+      ((or (= (car Cmd) "use")
+          (= (car Cmd) "break")
+          (= (car Cmd) "drop")
+          (= (car Cmd) "take") )
+       (prinll "You do not see any value in doing that.") )
+      (T
+         (prinll "Nothing happens.") ) ) )
+
 (de read-loop ()
    (c-loop
       (prin "> ")
@@ -159,9 +177,9 @@
                         "room-exits" ) (cadr Cmd) ) )
                (if ExitCmd
                   (prog (ExitCmd) (continue))
-                  (prog (prinll "Nothing happens") (continue)) ) ) )
+                  (prog (prinll "You cannot go that direction.") (continue)) ) ) )
          
-         (prinll "Nothing happens") ) ) )
+         (handle-unhandled-cmd Cmd) ) ) )
 
 (de set-world-var (Name Val)
    (setq World (aa-insert "variables"
