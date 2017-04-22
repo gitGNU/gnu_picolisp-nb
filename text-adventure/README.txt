@@ -8,4 +8,4 @@ STARTING THE GAME
 After installing the picolisp interpreter, CD into the program
 directory and run
 
-$ pil dr-theobold.l -start-game
+$ pil dr-theobold.l -start-game +

@@ -402,7 +402,9 @@
                     (if (read-world-var "microwave-contents")
                        (prinll "The microwave already has something in it.")
                        (prog
-                          (set-world-var "microwave-contents" "egg")
+                          (if (not (get-inventory-data "egg"))
+                             (set-world-var "microwave-contents" "egg")
+                             (set-world-var "microwave-contents" "the egg") )
                           (remove-from-inventory "egg")
                           (prinll "You put an egg in the microwave.") ) ) ) ) )
          (room-command '("break" "egg")
@@ -413,6 +415,30 @@
                        (prog
                           (remove-from-inventory "egg")
                           (prinll "The egg cracks and leaves a mess on the floor.") ) ) ) ) )
+         (room-command '("use" "microwave")
+            '(() (if (not (read-world-var "microwave-contents"))
+                    (prinll "There is nothing in the microwave to cook.")
+                    (if (= (read-world-var "microwave-contents") "egg")
+                       (prog 
+                          (set-world-var "microwave-contents" NIL)
+                          (case (rand 1 4)
+                             (1 (prinll "The egg explodes, covering the inside of the microwave with pieces of \
+                                         shell and yolk."))
+                             (2 (prinll "The egg bursts into a ball of plasma, then vaporizes into nothing."))
+                             (3 (prinll "The egg implodes dramatically, bending space and time. For a brief \
+                                         moment, you see a glimpse into another part of the universe, before the \
+                                         tunnel collapses in on itself."))
+                             (4 (prinll "The atomic structure of the egg breaks down and becomes a vortex of \
+                                         spinning particles. For several seconds, the particles arrange \
+                                         themselves into a beautiful crystalline structure, then dissipate, \
+                                         settling and leaving a thin film on the microwave plate." ) ) ) )
+                       # "the egg"
+                       (prog
+                          (prinll "The bulk of the egg-like object in the microwave melts away, leaving \
+                                   behind a mysterious, glittering crystal.")
+                          (add-to-inventory "crystal")
+                          (set-world-var "microwave-contents" NIL)
+                          (prinll "A crystal has been added to your inventory.") ) ) ) ) )
          (room-exit "west" '(() (enter-room "living-room"))) )
       (room "puzzle-hub"
          (room-long-description "You are in a room that has not yet been coded! Digital oblivion!")
