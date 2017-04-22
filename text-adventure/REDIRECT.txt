@@ -1,0 +1,4 @@
+The project "Dr. Theobold" has been moved to a different repository,
+available at
+
+https://savannah.nongnu.org/projects/dr-theobold
